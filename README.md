@@ -44,10 +44,11 @@ treat them uniformly. Implementations live in `src/anomaly/methods.py`.
 For each point I estimate the mean and spread of the *preceding* window (the
 current point is excluded, so it cannot hide itself) and standardise:
 
-```
-z_t = (x_t - mean_of_last_w) / std_of_last_w        # classic
-z_t = (x_t - median_of_last_w) / (1.4826 * MAD)     # robust
-```
+$$
+z_t = \frac{x_t - \text{mean}_w}{\text{std}_w} \quad \text{(classic)}
+\qquad\qquad
+z_t = \frac{x_t - \text{median}_w}{1.4826 \cdot \text{MAD}_w} \quad \text{(robust)}
+$$
 
 `MAD` is the median absolute deviation; the `1.4826` makes it match the standard
 deviation for Gaussian data. The robust variant matters when the recent history
@@ -59,12 +60,15 @@ and *mask* the next real event, while the median/MAD barely move.
 An exponentially weighted moving average smooths through single-point noise but
 reacts to small persistent shifts:
 
-```
-Z_t = λ·x_t + (1-λ)·Z_{t-1}
-control limits:  μ₀ ± L·σ₀·sqrt( (λ/(2-λ)) · (1 - (1-λ)^{2t}) )
-```
+$$
+Z_t = \lambda x_t + (1-\lambda) Z_{t-1}
+$$
 
-Small `λ` (0.1-0.3) makes it sensitive to slow drifts. Because the chart assumes
+$$
+\text{control limits: } \mu_0 \pm L\sigma_0\sqrt{\frac{\lambda}{2-\lambda}\left(1-(1-\lambda)^{2t}\right)}
+$$
+
+Small $\lambda$ (0.1-0.3) makes it sensitive to slow drifts. Because the chart assumes
 a stationary target, I feed it the deseasonalised residual (see below), not the
 raw KPI.
 
@@ -73,17 +77,21 @@ raw KPI.
 CUSUM accumulates standardised deviations, so tiny biases that a point-wise test
 never notices eventually add up and trip an alarm:
 
-```
-C⁺_t = max(0, C⁺_{t-1} + y_t - k)      y_t = (x_t - μ₀)/σ₀
-C⁻_t = max(0, C⁻_{t-1} - y_t - k)      alarm when C⁺ or C⁻ > h
-```
+$$
+C^+_t = \max(0,\ C^+_{t-1} + y_t - k) \qquad y_t = \frac{x_t - \mu_0}{\sigma_0}
+$$
+
+$$
+C^-_t = \max(0,\ C^-_{t-1} - y_t - k) \qquad \text{alarm when } C^+ \text{ or } C^- > h
+$$
 
 `k` is the slack (with `k = 0.5` the chart is tuned for ~1σ shifts) and `h` is
 the decision threshold. Its behaviour is summarised by the **Average Run
 Length**: how long between false alarms (in-control) versus how long to detect
 (out-of-control). `cusum_arl()` estimates both by simulation; for `k=0.5, h=5`
-I measure ARL₀ ≈ **462** samples between false alarms against ARL₁ ≈ **10.4**
-samples to catch a 1σ shift, in line with the textbook values.
+I measure $\text{ARL}_0 \approx$ **462** samples between false alarms against
+$\text{ARL}_1 \approx$ **10.4** samples to catch a $1\sigma$ shift, in line with
+the textbook values.
 
 ### 4. STL-style seasonal-decomposition residual detector
 
