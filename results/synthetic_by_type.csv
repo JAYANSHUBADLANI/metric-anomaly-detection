@@ -1,0 +1,7 @@
+method,spike,level_shift,seasonality_break
+rolling z-score,0.75,0.0,0.5
+robust z-score (MAD),0.5,0.5,1.0
+EWMA control chart,0.25,1.0,1.0
+CUSUM,0.25,1.0,1.0
+STL residual,1.0,0.0,1.0
+IsolationForest,0.75,0.0,1.0

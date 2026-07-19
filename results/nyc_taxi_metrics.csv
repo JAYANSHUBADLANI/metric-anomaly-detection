@@ -1,0 +1,7 @@
+method,precision,recall,f1,false_alarm_rate,mean_delay_samples,n_detected,n_events,n_flagged
+rolling z-score,1.0,0.2,0.333,0.0,139.0,1,5,1
+robust z-score (MAD),0.747,0.6,0.666,0.0226,57.3,3,5,250
+EWMA control chart,0.403,1.0,0.575,0.1649,38.8,5,5,1893
+CUSUM,0.707,1.0,0.828,0.0462,29.8,5,5,530
+STL residual,0.63,1.0,0.773,0.0656,70.0,5,5,709
+IsolationForest,0.909,1.0,0.952,0.0112,97.4,5,5,310
