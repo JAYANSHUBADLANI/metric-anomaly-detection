@@ -560,7 +560,7 @@ def isolation_forest_detector(
     raw = model.decision_function(feats)   # higher = more normal
     score = -raw                            # higher = more anomalous
     flags = model.predict(feats) == -1
-    threshold = float(-model.offset_)       # decision_function crosses 0 here
+    threshold = 0.0                         # predict flags exactly where this score goes positive
     return DetectionResult(
         flags=flags,
         score=score,
