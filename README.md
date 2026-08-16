@@ -1,5 +1,7 @@
 # Metric Anomaly Detection
 
+[![tests](https://github.com/JAYANSHUBADLANI/metric-anomaly-detection/actions/workflows/tests.yml/badge.svg)](https://github.com/JAYANSHUBADLANI/metric-anomaly-detection/actions/workflows/tests.yml)
+
 Statistical anomaly detection for business KPIs and time series, with the core
 methods written **from scratch** on top of NumPy / pandas / SciPy. The point of
 the project is not to wrap a library but to understand *why* each classic
